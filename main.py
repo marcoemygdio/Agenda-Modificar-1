@@ -31,11 +31,37 @@ def index():
 @app.route('/create', methods=['POST'])
 def create():
   name = request.form.get('name')
-  new_name = Contacts(name=name)
+  email = request.form.get('email')
+  phone = request.form.get('phone')
+  new_name = Contacts(  
+    name=name,
+    email=email,
+    phone=phone
+  )
   db.session.add(new_name)
   db.session.commit()
   return redirect('/')
-  
+
+@app.route('/delete/<int:id>')
+def delete(id):
+  dlt = Contacts.query.filter_by(id=id).first()
+  db.session.delete(dlt)
+  db.session.commit()
+  return redirect('/')
+
+@app.route('/update/<int:id>', methods=['POST'])
+def update(id):
+  name = request.form.get('name')
+  email = request.form.get('email')
+  phone = request.form.get('phone')
+  nc = Contacts.query.filter_by(id=id).first()
+  ec = Contacts.query.filter_by(id=id).first()
+  pc = Contacts.query.filter_by(id=id).first()
+  nc.name = name
+  ec.email = email
+  pc.phone = phone
+  db.session.commit()
+  return redirect('/')
 
 if __name__ == "__main__":
   db.create_all()
